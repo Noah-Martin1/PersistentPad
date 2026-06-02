@@ -6,30 +6,23 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
-    @State private var text = ""
-    @State private var showStartup = true
-    
+
+    @StateObject private var viewModel = EditorViewModel()
+
     var body: some View {
-        TextEditor(text: $text)
-            .padding(8)
+        TextEditor(text: $viewModel.text)
+        
+            .padding(8) // edge spacing so text doesnt look to hug textbox walls
             .background(Color(NSColor.textBackgroundColor))
             .cornerRadius(8)
+        
             .padding()
-            .sheet(isPresented: $showStartup) {
+            .sheet(isPresented: $viewModel.showStartup) {
                 StartupView(
-                    onOpen: {
-                        print("open file tapped")
-                        showStartup = false
-                    },
-                    onNew: {
-                        print("new file tapped")
-                        text = ""
-                        showStartup = false
-                    }
-                    
+                    onOpen: viewModel.openFile,
+                    onNew: viewModel.newFile
                 )
             }
     }
